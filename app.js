@@ -74,13 +74,21 @@
     home() {
       document.title = `${S.name} — ${S.role} | ${S.location}`;
       const featured = (c, n) => S.projects.filter(p => p.category === c).slice(0, n).map(card).join("");
+      // 开场动画:从站外进来(或刷新)时播放;站内点回首页不播。网址加 ?intro 可强制播放
+      const internal = document.referrer && new URL(document.referrer).origin === location.origin;
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!reduce && (!internal || location.search.includes("intro"))) document.documentElement.classList.add("intro");
+      let li = 0;
+      const letters = S.name.split(" ").map(w => `<span class="word">${[...w].map(ch => `<span class="ch"><i style="--i:${li++}">${ch}</i></span>`).join("")}</span>`).join(" ");
       app.innerHTML = `
         <section class="hero" style="padding:0">
           <div class="media">${S.heroImage ? `<img src="${S.heroImage}" alt="" />` : `<div class="ph"></div>`}</div>
+          <div class="veil"></div>
+          <div class="scroll-cue" aria-hidden="true"><span><em>Scroll</em><b></b></span></div>
           <div class="wrap">
             <div>
               <span class="eyebrow">${S.role} · ${S.location}</span>
-              <h1>${S.name}</h1>
+              <h1 aria-label="${S.name}">${letters}</h1>
               <p class="line">${S.heroLine}</p>
             </div>
             <div class="actions"><a class="btn" href="work.html">View Work</a><a class="btn solid" href="contact.html">Book a Shoot</a></div>
@@ -317,6 +325,25 @@
   }
 
   pages[page]();
+
+  // 首页大图视差:背景比文字滑得慢,名字和按钮随滚动淡出
+  const hero = $(".hero");
+  if (hero && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const m = $(".media", hero), w = $(".wrap", hero), cue = $(".scroll-cue", hero);
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const y = scrollY, h = hero.offsetHeight;
+      if (y > h) return;
+      m.style.transform = `translate3d(0, ${y * 0.35}px, 0)`;
+      w.style.opacity = Math.max(0, 1 - y / (h * 0.5));
+      w.style.transform = `translate3d(0, ${y * -0.12}px, 0)`;
+      if (cue) cue.style.opacity = Math.max(0, 1 - y / 120);
+    };
+    addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+
   observe(".card");
   observe(".reveal");
 })();

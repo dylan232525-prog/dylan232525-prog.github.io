@@ -9,7 +9,7 @@ window.SITE = {
   email: "dylan232525@gmail.com",           // ← 接收询价的邮箱
   instagram: "dylanontherunn",                 // ← 不带 @
 
-  formspreeId: "",   // 留空 = 表单通过 FormSubmit 直接发到上面的 email;填 Formspree ID 则改用 Formspree
+  formspreeId: "xgaaqbea",   // Formspree 表单 ID(询价发到 dylan232525@gmail.com)。留空则改用 FormSubmit
   calendlyUrl: "",   // ← Calendly 链接(例如 "https://calendly.com/yourname/15min")。留空显示占位
 
   heroImage: "images/hero.jpg",     // ← 首页大图,例如 "images/hero.jpg"。留空显示占位

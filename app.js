@@ -278,7 +278,7 @@
           : { ...fields, _subject: subject, _replyto: data.get("email"), _template: "table", _captcha: "false" };
         note.className = "form-note"; note.textContent = "Sending…"; btn.disabled = true;
         try {
-          const r = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
+          const r = await fetch(endpoint, { signal: AbortSignal.timeout(12000), method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
           const j = await r.json().catch(() => ({}));
           if (!r.ok || j.success === "false" || j.success === false) throw 0;
           form.reset(); note.className = "form-note ok"; note.textContent = "Thanks! Your inquiry is in — I'll reply within 24 hours.";

@@ -264,18 +264,28 @@
         e.preventDefault();
         const data = new FormData(form);
         if (data.get("_gotcha")) return;
-        if (S.formspreeId) {
-          note.className = "form-note"; note.textContent = "Sending…";
-          try {
-            const r = await fetch(`https://formspree.io/f/${S.formspreeId}`, { method: "POST", body: data, headers: { Accept: "application/json" } });
-            if (!r.ok) throw 0;
-            form.reset(); note.className = "form-note ok"; note.textContent = "Thanks! Your inquiry is in — I'll reply within 24 hours.";
-          } catch { note.className = "form-note err"; note.textContent = `Something went wrong. Please email me at ${S.email}.`; }
-        } else {
-          const lines = ["type", "subject", "date", "budget", "phone"].map(k => `${k}: ${data.get(k) || "-"}`).join("\n");
-          const body = `${data.get("message")}\n\n${lines}\n\n— ${data.get("name")} (${data.get("email")})`;
-          location.href = `mailto:${S.email}?subject=${encodeURIComponent(`Shoot inquiry — ${data.get("type")} — ${data.get("name")}`)}&body=${encodeURIComponent(body)}`;
-        }
+        const btn = form.querySelector("button[type=submit]");
+        const fields = {
+          Name: data.get("name"), Email: data.get("email"), "Shoot type": data.get("type"),
+          Phone: data.get("phone") || "-", "Car / team / event": data.get("subject") || "-",
+          "Preferred date": data.get("date") || "-", Budget: data.get("budget") || "-", Message: data.get("message"),
+        };
+        const subject = `New shoot inquiry — ${data.get("type")} — ${data.get("name")}`;
+        // Send straight from the page — the client never has to open an email app
+        const endpoint = S.formspreeId ? `https://formspree.io/f/${S.formspreeId}` : `https://formsubmit.co/ajax/${S.email}`;
+        const payload = S.formspreeId
+          ? { ...fields, _subject: subject, _replyto: data.get("email") }
+          : { ...fields, _subject: subject, _replyto: data.get("email"), _template: "table", _captcha: "false" };
+        note.className = "form-note"; note.textContent = "Sending…"; btn.disabled = true;
+        try {
+          const r = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
+          const j = await r.json().catch(() => ({}));
+          if (!r.ok || j.success === "false" || j.success === false) throw 0;
+          form.reset(); note.className = "form-note ok"; note.textContent = "Thanks! Your inquiry is in — I'll reply within 24 hours.";
+        } catch {
+          note.className = "form-note err";
+          note.innerHTML = `Something went wrong. Please email me directly at <a href="mailto:${S.email}" style="text-decoration:underline">${S.email}</a>.`;
+        } finally { btn.disabled = false; }
       });
     },
   };

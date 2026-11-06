@@ -1,0 +1,312 @@
+(() => {
+  const S = window.SITE;
+  const page = document.body.dataset.page;
+  const $ = (q, el = document) => el.querySelector(q);
+  const app = $("#app");
+  const CAT = { automotive: "Automotive", sports: "Sports" };
+
+  // ---------- helpers ----------
+  const media = (p, alt = "") =>
+    p && p.src
+      ? `<img src="${p.src}" alt="${alt}" loading="lazy"${p.pos ? ` style="object-position:${p.pos}"` : ""} />`
+      : `<div class="ph" style="aspect-ratio:${(p && p.ph) || "3/2"}"></div>`;
+  const projUrl = p => `project.html?p=${encodeURIComponent(p.slug)}`;
+
+  const observe = sel => {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    }), { rootMargin: "0px 0px -40px 0px" });
+    document.querySelectorAll(sel).forEach((el, i) => { el.style.transitionDelay = `${(i % 2) * 90}ms`; io.observe(el); });
+  };
+
+  const card = p => `
+    <a class="card" href="${projUrl(p)}">
+      <div class="media">${media(p.cover, p.title)}</div>
+      <span class="tag">${CAT[p.category]}</span>
+      <div class="info"><h3>${p.title}</h3><small>${p.subtitle} · ${p.location}</small></div>
+    </a>`;
+
+  // ---------- shell: nav + footer ----------
+  const links = [["index.html", "Home", "home"], ["work.html", "Work", "work"], ["about.html", "About", "about"]];
+  document.body.insertAdjacentHTML("afterbegin", `
+    <header class="nav ${page === "home" ? "" : "solid"}" id="nav">
+      <div class="wrap">
+        <a class="brand" href="index.html">${S.name}</a>
+        <button class="burger" aria-label="Menu">☰</button>
+        <nav>
+          ${links.map(([h, t, k]) => `<a href="${h}" class="${page === k || (k === "work" && page === "project") ? "on" : ""}">${t}</a>`).join("")}
+          <a href="contact.html" class="cta ${page === "contact" ? "on" : ""}">Book a Shoot</a>
+        </nav>
+      </div>
+    </header>`);
+  document.body.insertAdjacentHTML("beforeend", `
+    <footer><div class="wrap">
+      <span>© ${new Date().getFullYear()} ${S.name} — ${S.role}, ${S.location}</span>
+      <span><a href="mailto:${S.email}">${S.email}</a>${S.instagram ? ` · <a href="https://instagram.com/${S.instagram}" target="_blank" rel="noopener">Instagram</a>` : ""}</span>
+    </div></footer>`);
+  const nav = $("#nav");
+  $(".burger").onclick = () => nav.classList.toggle("menu");
+  if (page === "home") {
+    const f = () => nav.classList.toggle("solid", scrollY > 60);
+    addEventListener("scroll", f, { passive: true }); f();
+  }
+
+  // ---------- pages ----------
+  const ctaBand = `
+    <section class="band reveal"><div class="wrap">
+      <span class="eyebrow">Book a shoot</span>
+      <h2>Got a car worth shooting or a game worth remembering?</h2>
+      <p>Tell me what you have in mind — I'll get back to you within 24 hours.</p>
+      <a class="btn solid" href="contact.html">Start an Inquiry →</a>
+    </div></section>`;
+
+  const quotes = () => `
+    <section><div class="wrap">
+      <div class="head"><h2>Kind words</h2></div>
+      <div class="quotes">${S.testimonials.map(t => `
+        <div class="quote reveal"><p>${t.quote}</p><b>${t.who}</b><span>${t.what}</span></div>`).join("")}</div>
+    </div></section>`;
+
+  const steps = () => `
+    <div class="steps">${S.process.map(s => `<div class="step reveal"><h3>${s.step}</h3><p>${s.text}</p></div>`).join("")}</div>`;
+
+  const pages = {
+    home() {
+      document.title = `${S.name} — ${S.role} | ${S.location}`;
+      const featured = (c, n) => S.projects.filter(p => p.category === c).slice(0, n).map(card).join("");
+      app.innerHTML = `
+        <section class="hero" style="padding:0">
+          <div class="media">${S.heroImage ? `<img src="${S.heroImage}" alt="" />` : `<div class="ph"></div>`}</div>
+          <div class="wrap">
+            <div>
+              <span class="eyebrow">${S.role} · ${S.location}</span>
+              <h1>${S.name}</h1>
+              <p class="line">${S.heroLine}</p>
+            </div>
+            <div class="actions"><a class="btn" href="work.html">View Work</a><a class="btn solid" href="contact.html">Book a Shoot</a></div>
+          </div>
+        </section>
+
+        <section><div class="wrap">
+          <div class="head"><div><span class="eyebrow">Selected</span><h2>Automotive</h2></div><a class="link-arrow" href="work.html#automotive">All automotive →</a></div>
+          <div class="cards three">${featured("automotive", 3)}</div>
+        </div></section>
+
+        <section style="padding-top:0"><div class="wrap">
+          <div class="head"><div><span class="eyebrow">Selected</span><h2>Sports</h2></div><a class="link-arrow" href="work.html#sports">All sports →</a></div>
+          <div class="cards">${featured("sports", 2)}</div>
+        </div></section>
+
+        <section style="padding-top:0"><div class="wrap">
+          <div class="head"><h2>What I shoot</h2></div>
+          <div class="services">${S.services.map((s, i) => `<div class="service reveal"><span class="n">0${i + 1}</span><h3>${s.title}</h3><p>${s.text}</p></div>`).join("")}</div>
+        </div></section>
+
+        ${ctaBand}
+        ${quotes()}`;
+    },
+
+    work() {
+      document.title = `Work — ${S.name}`;
+      app.innerHTML = `
+        <div class="wrap page-top"><span class="eyebrow">Portfolio</span><h1>Work</h1></div>
+        <section style="padding-top:20px"><div class="wrap">
+          <div class="head" style="margin-bottom:30px">
+            <div class="filters">
+              <button data-f="all">All</button><button data-f="automotive">Automotive</button><button data-f="sports">Sports</button>
+            </div>
+            <span class="muted" id="count"></span>
+          </div>
+          <div class="cards" id="cards"></div>
+        </div></section>
+        ${ctaBand}`;
+      const render = f => {
+        const list = S.projects.filter(p => f === "all" || p.category === f);
+        $("#cards").innerHTML = list.map(card).join("");
+        $("#count").textContent = `${list.length} project${list.length === 1 ? "" : "s"}`;
+        document.querySelectorAll(".filters button").forEach(b => b.classList.toggle("on", b.dataset.f === f));
+        observe(".card");
+      };
+      $(".filters").onclick = e => { const b = e.target.closest("button"); if (b) { history.replaceState(null, "", b.dataset.f === "all" ? "work.html" : "#" + b.dataset.f); render(b.dataset.f); } };
+      render(CAT[location.hash.slice(1)] ? location.hash.slice(1) : "all");
+    },
+
+    project() {
+      const slug = new URLSearchParams(location.search).get("p");
+      const i = Math.max(0, S.projects.findIndex(p => p.slug === slug));
+      const p = S.projects[i];
+      const prev = S.projects[(i - 1 + S.projects.length) % S.projects.length];
+      const next = S.projects[(i + 1) % S.projects.length];
+      document.title = `${p.title} — ${S.name}`;
+      const isWide = ph => ph.ph ? ph.ph === "3/2" || ph.ph === "16/9" : ph.wide;
+      // portraits sit in pairs; a portrait without a partner is centered on its own row
+      const layout = []; let open = -1;
+      p.photos.forEach((ph, k) => {
+        if (isWide(ph)) { if (open >= 0) { layout[open] = "solo"; open = -1; } layout[k] = "wide"; }
+        else if (open >= 0) { layout[k] = ""; open = -1; } else { layout[k] = ""; open = k; }
+      });
+      if (open >= 0) layout[open] = "solo";
+      app.innerHTML = `
+        <div class="proj-hero"><div class="media">${media(p.hero || p.cover, p.title)}</div></div>
+        <div class="wrap">
+          <div class="proj-meta">
+            <div><span class="eyebrow">${CAT[p.category]}</span><h1>${p.title}</h1></div>
+            <div><p>${p.summary}</p>
+              <div class="facts">
+                <div><small>Client</small>${p.subtitle}</div>
+                <div><small>Location</small>${p.location}</div>
+                <div><small>Year</small>${p.year}</div>
+              </div>
+            </div>
+          </div>
+          <div class="gallery">${p.photos.map((ph, k) => `
+            <div class="g ${layout[k]}" data-k="${k}" ${ph.ph ? `style="aspect-ratio:${ph.ph}"` : ""}>${media(ph, `${p.title} ${k + 1}`)}</div>`).join("")}
+          </div>
+          <div class="proj-nav">
+            <a href="${projUrl(prev)}"><small>← Previous</small><span>${prev.title}</span></a>
+            <a href="${projUrl(next)}"><small>Next →</small><span>${next.title}</span></a>
+          </div>
+        </div>
+        <div style="height:60px"></div>
+        ${ctaBand}`;
+      observe(".g");
+      lightbox(p.photos);
+    },
+
+    about() {
+      document.title = `About — ${S.name}`;
+      app.innerHTML = `
+        <div class="wrap page-top"><span class="eyebrow">About</span><h1>${S.name}</h1></div>
+        <section style="padding-top:30px"><div class="wrap about-grid">
+          <div class="media reveal">${S.aboutPhoto ? `<img src="${S.aboutPhoto}" alt="${S.name}" />` : `<div class="ph" style="height:100%"></div>`}</div>
+          <div class="reveal">
+            <p>${S.intro}</p>
+            <div class="services" style="grid-template-columns:1fr">${S.services.map((s, i) => `
+              <div class="service" style="border-right:0;border-bottom:1px solid var(--line);padding:22px 0"><span class="n">0${i + 1}</span><h3>${s.title}</h3><p>${s.text}</p></div>`).join("")}</div>
+          </div>
+        </div></section>
+        <section style="padding-top:0"><div class="wrap">
+          <div class="head"><div><span class="eyebrow">How it works</span><h2>From inquiry to delivery</h2></div></div>
+          ${steps()}
+        </div></section>
+        ${ctaBand}
+        ${quotes()}`;
+    },
+
+    contact() {
+      document.title = `Book a Shoot — ${S.name}`;
+      app.innerHTML = `
+        <div class="wrap page-top"><span class="eyebrow">Book a shoot</span><h1>Let's talk</h1>
+          <p>Fill in a few details and I'll reply within 24 hours with ideas and a quote — or grab a quick call below.</p></div>
+        <section style="padding-top:30px"><div class="wrap contact-grid">
+          <form class="form" id="form">
+            <div class="row">
+              <label>Name<input name="name" required /></label>
+              <label>Email<input name="email" type="email" required /></label>
+            </div>
+            <div class="row">
+              <label>Shoot type
+                <select name="type" required>
+                  <option value="">Select…</option>
+                  <option>Private car shoot</option>
+                  <option>Dealership / brand</option>
+                  <option>Sports / event</option>
+                  <option>Athlete portraits</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <label>Phone (optional)<input name="phone" type="tel" /></label>
+            </div>
+            <div class="row">
+              <label>Car / team / event<input name="subject" placeholder="e.g. 2024 911 GT3, LA youth league final" /></label>
+              <label>Preferred date<input name="date" type="date" /></label>
+            </div>
+            <label>Budget
+              <select name="budget">
+                <option value="">Prefer not to say</option>
+                <option>Under $500</option>
+                <option>$500 – $1,000</option>
+                <option>$1,000 – $2,500</option>
+                <option>$2,500+</option>
+              </select>
+            </label>
+            <label>Tell me more<textarea name="message" rows="5" required placeholder="Location ideas, how you'll use the photos, anything else…"></textarea></label>
+            <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+            <button class="btn solid" type="submit">Send Inquiry →</button>
+            <p class="form-note" id="note"></p>
+          </form>
+
+          <div class="side">
+            <div class="box">
+              <h3>Prefer to talk first?</h3>
+              <p>Book a free 15-minute call to go over your idea, dates and pricing.</p>
+              <div id="cal">${S.calendlyUrl
+                ? `<div class="calendly-inline-widget" data-url="${S.calendlyUrl}?hide_gdpr_banner=1&background_color=121214&text_color=f3f1ec&primary_color=e3a548"></div>`
+                : `<div class="cal-ph">Calendly booking calendar appears here once connected.</div>`}</div>
+            </div>
+            <div class="box direct">
+              <h3>Direct</h3>
+              <a href="mailto:${S.email}">${S.email}</a>
+              ${S.instagram ? `<a href="https://instagram.com/${S.instagram}" target="_blank" rel="noopener">@${S.instagram}</a>` : ""}
+              <a>${S.location}</a>
+            </div>
+          </div>
+        </div></section>`;
+
+      if (S.calendlyUrl) {
+        const s = document.createElement("script");
+        s.src = "https://assets.calendly.com/assets/external/widget.js"; s.async = true;
+        document.body.appendChild(s);
+      }
+
+      const form = $("#form"), note = $("#note");
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        const data = new FormData(form);
+        if (data.get("_gotcha")) return;
+        if (S.formspreeId) {
+          note.className = "form-note"; note.textContent = "Sending…";
+          try {
+            const r = await fetch(`https://formspree.io/f/${S.formspreeId}`, { method: "POST", body: data, headers: { Accept: "application/json" } });
+            if (!r.ok) throw 0;
+            form.reset(); note.className = "form-note ok"; note.textContent = "Thanks! Your inquiry is in — I'll reply within 24 hours.";
+          } catch { note.className = "form-note err"; note.textContent = `Something went wrong. Please email me at ${S.email}.`; }
+        } else {
+          const lines = ["type", "subject", "date", "budget", "phone"].map(k => `${k}: ${data.get(k) || "-"}`).join("\n");
+          const body = `${data.get("message")}\n\n${lines}\n\n— ${data.get("name")} (${data.get("email")})`;
+          location.href = `mailto:${S.email}?subject=${encodeURIComponent(`Shoot inquiry — ${data.get("type")} — ${data.get("name")}`)}&body=${encodeURIComponent(body)}`;
+        }
+      });
+    },
+  };
+
+  // ---------- lightbox ----------
+  function lightbox(photos) {
+    document.body.insertAdjacentHTML("beforeend", `
+      <div class="lightbox" id="lb" aria-hidden="true">
+        <button class="lb-close" aria-label="Close">×</button>
+        <button class="lb-prev" aria-label="Previous">‹</button>
+        <div class="stage" id="stage"></div>
+        <button class="lb-next" aria-label="Next">›</button>
+        <div class="count" id="lbCount"></div>
+      </div>`);
+    const lb = $("#lb"); let idx = 0;
+    const show = i => { idx = (i + photos.length) % photos.length; $("#stage").innerHTML = media(photos[idx]); $("#lbCount").textContent = `${idx + 1} / ${photos.length}`; };
+    const open = i => { show(i); lb.classList.add("open"); document.body.style.overflow = "hidden"; };
+    const close = () => { lb.classList.remove("open"); document.body.style.overflow = ""; };
+    document.querySelectorAll(".g").forEach(g => g.onclick = () => open(+g.dataset.k));
+    $(".lb-close").onclick = close; $(".lb-prev").onclick = () => show(idx - 1); $(".lb-next").onclick = () => show(idx + 1);
+    lb.onclick = e => { if (e.target === lb || e.target.id === "stage") close(); };
+    addEventListener("keydown", e => {
+      if (!lb.classList.contains("open")) return;
+      if (e.key === "Escape") close(); if (e.key === "ArrowRight") show(idx + 1); if (e.key === "ArrowLeft") show(idx - 1);
+    });
+    let sx = 0;
+    lb.addEventListener("touchstart", e => { sx = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener("touchend", e => { const d = e.changedTouches[0].clientX - sx; if (Math.abs(d) > 50) show(idx + (d < 0 ? 1 : -1)); });
+  }
+
+  pages[page]();
+  observe(".card");
+  observe(".reveal");
+})();

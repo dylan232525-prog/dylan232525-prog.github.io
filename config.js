@@ -4,7 +4,7 @@
 
 window.SITE = {
   name: "Dylan Li",                       // ← 你的英文名
-  role: "Automotive & Sports Photographer",
+  role: "Automotive Photographer",
   location: "Los Angeles, CA",
   email: "dylan232525@gmail.com",           // ← 接收询价的邮箱
   instagram: "dylanontherunn",                 // ← 不带 @
@@ -13,33 +13,44 @@ window.SITE = {
   calendlyUrl: "",   // ← Calendly 链接(例如 "https://calendly.com/yourname/15min")。留空显示占位
 
   heroImage: "images/hero.jpg",     // ← 首页大图,例如 "images/hero.jpg"。留空显示占位
-  heroLine: "Cars in motion. Games in the moment.",
+  heroLine: "Cars in motion. Light in the details.",
 
   intro:
-    "I'm a Los Angeles–based photographer focused on cars and sports. " +
-    "I work with private owners who want their car shot the way they see it, " +
-    "with dealerships and brands that need images that sell, " +
-    "and with teams and athletes who need the decisive moment — delivered fast.",
+    "I'm a Los Angeles–based automotive photographer working across LA and the Bay Area. " +
+    "I shoot for private owners who want their car captured the way they see it, " +
+    "for Turo hosts who need listings that stand out, " +
+    "and for dealerships and brands that need images that sell — delivered fast.",
 
   aboutPhoto: "",    // ← 你本人的照片,例如 "images/me.jpg"
 
+  // ---------- 首页 ----------
+  // 项目聚焦:首页单独展示一个项目
+  spotlight: {
+    project: "maserati-grecale-sf",
+    main: "images/grecale-01.jpg",
+    thumbs: ["images/grecale-04.jpg", "images/grecale-05.jpg"],
+    story: "One car, two bridges. A deep blue Grecale under the Golden Gate's steel arch at Fort Point, then out on the pier beneath the Bay Bridge — San Francisco's two icons in one set.",
+  },
+
+  ctaImage: "images/c8-04.jpg",   // 预约区的背景照片
+
   services: [
-    { title: "Private Owners", text: "Rolling shots, detail sets and location shoots for your car — from daily drivers to garage queens." },
-    { title: "Dealers & Brands", text: "Inventory, launch and campaign imagery for dealerships, tuners and automotive brands." },
-    { title: "Sports", text: "Game coverage, athlete portraits and action for teams, leagues and sponsors." },
+    { img: "images/bmw740i-02.jpg", title: "Private Owners", text: "Rolling shots, detail sets and location shoots for your car — from daily drivers to garage queens." },
+    { img: "images/cle-05.jpg", title: "Dealers & Brands", text: "Inventory, launch and campaign imagery for dealerships, tuners and automotive brands." },
+    { img: "images/supra-01.jpg", title: "Rolling Shots", text: "Car-to-car motion work on freeways, bridges and city streets — the car the way it looks moving." },
   ],
 
   process: [
-    { step: "Inquiry", text: "Tell me about your car, team or project — dates, location and what the images are for." },
+    { step: "Inquiry", text: "Tell me about your car or project — dates, location and what the images are for." },
     { step: "Plan", text: "We hop on a quick call, lock in the concept, locations and timing, and I send a quote." },
-    { step: "Shoot", text: "Golden hour, studio, track or arena — I handle the logistics so you can enjoy the day." },
+    { step: "Shoot", text: "Golden hour, city streets, garage or track — I handle the logistics so you can enjoy the day." },
     { step: "Deliver", text: "Edited, high-resolution images in a private online gallery, typically within 5–7 days." },
   ],
 
   testimonials: [
     { quote: "Placeholder — paste a real client quote here. Short and specific works best.", who: "Client Name", what: "Porsche 911 owner" },
     { quote: "Placeholder — e.g. what it was like to work with you and how the photos were used.", who: "Client Name", what: "Dealership, Los Angeles" },
-    { quote: "Placeholder — a team manager, athlete or brand contact.", who: "Client Name", what: "Team / League" },
+    { quote: "Placeholder — a Turo host or brand contact.", who: "Client Name", what: "Turo host" },
   ],
 
   // ---------------- 作品项目 ----------------
@@ -76,11 +87,12 @@ window.SITE = {
       ],
     },
     {
-      slug: "temple-city-hoco-2025", category: "sports",
+      slug: "temple-city-hoco-2025", category: "sports", hidden: true,   // 体育暂时隐藏,以后删掉 hidden 即可恢复
       title: "Homecoming Night", subtitle: "Athlete & family · Football", location: "Temple City High School", year: 2025,
       summary: "Temple City vs. South Pasadena under the lights — the 2025 homecoming game, shot for a player and his family.",
       cover: { src: "images/hoco25-02.jpg", pos: "50% 62%" },
       hero: { src: "images/hoco25-02.jpg", pos: "50% 52%" },
+      banner: { src: "images/hoco25-02.jpg", pos: "50% 36%" },   // 首页体育横幅的裁切位置
       photos: [
         { src: "images/hoco25-01.jpg" },
         { src: "images/hoco25-02.jpg" },
@@ -89,6 +101,39 @@ window.SITE = {
         { src: "images/hoco25-05.jpg" },
         { src: "images/hoco25-06.jpg" },
       ],
+    },
+    {
+      slug: "tesla-model-3-performance-la", category: "automotive",
+      title: "Tesla Model 3", subtitle: "Private owner · Turo host", location: "Los Angeles, CA", year: 2026,
+      summary: "Red under concrete — a Model 3 Performance lit in an empty underground garage after dark, then on the street beneath downtown's overpasses.",
+      cover: { src: "images/tesla-04.jpg", wide: true },
+      photos: [
+        { src: "images/tesla-01.jpg", wide: true },
+        { src: "images/tesla-02.jpg", wide: true },
+        { src: "images/tesla-03.jpg", wide: true },
+        { src: "images/tesla-04.jpg", wide: true },
+        { src: "images/tesla-05.jpg", wide: true },
+      ],
+    },
+    {
+      slug: "maserati-grecale-sf", category: "automotive",
+      title: "Maserati Grecale", subtitle: "Private owner · Turo host", location: "San Francisco, CA", year: 2026,
+      summary: "Blue Grecale under the steel arch of the Golden Gate at Fort Point, then out on the pier beneath the Bay Bridge.",
+      cover: { src: "images/grecale-01.jpg", wide: true },
+      photos: [
+        { src: "images/grecale-01.jpg", wide: true },
+        { src: "images/grecale-04.jpg", wide: true },
+        { src: "images/grecale-03.jpg", wide: true },
+        { src: "images/grecale-02.jpg", wide: true },
+        { src: "images/grecale-05.jpg", wide: true },
+      ],
+    },
+    {
+      slug: "soccer-athlete", category: "sports", hidden: true,   // hidden: true = 暂时不在网站上显示
+      title: "On the Pitch", subtitle: "Athlete portraits", location: "Carson, CA", year: 2025,
+      summary: "Action and portrait set for a club athlete.",
+      cover: { ph: "3/2" },
+      photos: [{ ph: "4/5" }, { ph: "4/5" }, { ph: "3/2" }, { ph: "3/2" }],
     },
     {
       slug: "toyota-gr-rolling", category: "automotive",
@@ -101,13 +146,6 @@ window.SITE = {
         { src: "images/gr86-01.jpg" },
         { src: "images/gr86-02.jpg" },
       ],
-    },
-    {
-      slug: "soccer-athlete", category: "sports",
-      title: "On the Pitch", subtitle: "Athlete portraits", location: "Carson, CA", year: 2025,
-      summary: "Action and portrait set for a club athlete.",
-      cover: { ph: "3/2" },
-      photos: [{ ph: "4/5" }, { ph: "4/5" }, { ph: "3/2" }, { ph: "3/2" }],
     },
     {
       slug: "bmw-740i-dtla", category: "automotive",

@@ -1,5 +1,6 @@
 (() => {
   const S = window.SITE;
+  S.projects = S.projects.filter(p => !p.hidden);   // hidden: true 的项目暂不显示
   const page = document.body.dataset.page;
   const $ = (q, el = document) => el.querySelector(q);
   const app = $("#app");
@@ -53,9 +54,9 @@
 
   // ---------- pages ----------
   const ctaBand = `
-    <section class="band reveal"><div class="wrap">
+    <section class="band reveal${S.ctaImage ? " photo" : ""}">${S.ctaImage ? `<img class="band-bg" src="${S.ctaImage}" alt="" loading="lazy" />` : ""}<div class="wrap">
       <span class="eyebrow">Book a shoot</span>
-      <h2>Got a car worth shooting or a game worth remembering?</h2>
+      <h2>Got a car worth shooting?</h2>
       <p>Tell me what you have in mind — I'll get back to you within 24 hours.</p>
       <a class="btn solid" href="contact.html">Start an Inquiry →</a>
     </div></section>`;
@@ -69,6 +70,26 @@
 
   const steps = () => `
     <div class="steps">${S.process.map(s => `<div class="step reveal"><h3>${s.step}</h3><p>${s.text}</p></div>`).join("")}</div>`;
+
+  // 首页项目聚焦
+  const spotlight = () => {
+    const sp = S.spotlight, p = sp && S.projects.find(x => x.slug === sp.project);
+    if (!p) return "";
+    return `
+        <section style="padding-top:0"><div class="wrap">
+          <div class="spot">
+            <a class="spot-main reveal" href="${projUrl(p)}"><img src="${sp.main}" alt="${p.title}" loading="lazy" /></a>
+            <div class="spot-side reveal">
+              <span class="eyebrow">Spotlight</span>
+              <h2>${p.title}</h2>
+              <p>${sp.story}</p>
+              <small>${p.subtitle} · ${p.location}</small>
+              <div class="spot-thumbs">${(sp.thumbs || []).map(t => `<a href="${projUrl(p)}"><img src="${t}" alt="" loading="lazy" /></a>`).join("")}</div>
+              <a class="link-arrow" href="${projUrl(p)}">View project →</a>
+            </div>
+          </div>
+        </div></section>`;
+  };
 
   const pages = {
     home() {
@@ -96,18 +117,24 @@
         </section>
 
         <section><div class="wrap">
-          <div class="head"><div><span class="eyebrow">Selected</span><h2>Automotive</h2></div><a class="link-arrow" href="work.html#automotive">All automotive →</a></div>
-          <div class="cards three">${featured("automotive", 3)}</div>
+          <div class="head"><div><span class="eyebrow">Selected</span><h2>Recent Work</h2></div><a class="link-arrow" href="work.html">All work →</a></div>
+          <div class="cards feature">${S.projects.filter(p => p.category === "automotive").slice(0, 5).map(card).join("")}</div>
+        </div></section>
+
+        ${spotlight()}
+
+        <section style="padding-top:0"><div class="wrap">
+          <div class="head"><div><span class="eyebrow">Services</span><h2>What I shoot</h2></div></div>
+          <div class="svc-grid">${S.services.map((s, i) => `
+            <div class="svc reveal">
+              ${s.img ? `<img src="${s.img}" alt="" loading="lazy" />` : ""}
+              <div class="svc-text"><span class="n">0${i + 1}</span><h3>${s.title}</h3><p>${s.text}</p></div>
+            </div>`).join("")}</div>
         </div></section>
 
         <section style="padding-top:0"><div class="wrap">
-          <div class="head"><div><span class="eyebrow">Selected</span><h2>Sports</h2></div><a class="link-arrow" href="work.html#sports">All sports →</a></div>
-          <div class="cards">${featured("sports", 2)}</div>
-        </div></section>
-
-        <section style="padding-top:0"><div class="wrap">
-          <div class="head"><h2>What I shoot</h2></div>
-          <div class="services">${S.services.map((s, i) => `<div class="service reveal"><span class="n">0${i + 1}</span><h3>${s.title}</h3><p>${s.text}</p></div>`).join("")}</div>
+          <div class="head"><div><span class="eyebrow">Process</span><h2>How it works</h2></div></div>
+          ${steps()}
         </div></section>
 
         ${ctaBand}
@@ -116,13 +143,14 @@
 
     work() {
       document.title = `Work — ${S.name}`;
+      const cats = Object.keys(CAT).filter(c => S.projects.some(p => p.category === c));   // 只显示有作品的分类
       app.innerHTML = `
         <div class="wrap page-top"><span class="eyebrow">Portfolio</span><h1>Work</h1></div>
         <section style="padding-top:20px"><div class="wrap">
           <div class="head" style="margin-bottom:30px">
-            <div class="filters">
-              <button data-f="all">All</button><button data-f="automotive">Automotive</button><button data-f="sports">Sports</button>
-            </div>
+            ${cats.length > 1 ? `<div class="filters">
+              <button data-f="all">All</button>${cats.map(c => `<button data-f="${c}">${CAT[c]}</button>`).join("")}
+            </div>` : "<div></div>"}
             <span class="muted" id="count"></span>
           </div>
           <div class="cards" id="cards"></div>
@@ -135,8 +163,8 @@
         document.querySelectorAll(".filters button").forEach(b => b.classList.toggle("on", b.dataset.f === f));
         observe(".card");
       };
-      $(".filters").onclick = e => { const b = e.target.closest("button"); if (b) { history.replaceState(null, "", b.dataset.f === "all" ? "work.html" : "#" + b.dataset.f); render(b.dataset.f); } };
-      render(CAT[location.hash.slice(1)] ? location.hash.slice(1) : "all");
+      if ($(".filters")) $(".filters").onclick = e => { const b = e.target.closest("button"); if (b) { history.replaceState(null, "", b.dataset.f === "all" ? "work.html" : "#" + b.dataset.f); render(b.dataset.f); } };
+      render(cats.includes(location.hash.slice(1)) ? location.hash.slice(1) : "all");
     },
 
     project() {
@@ -218,15 +246,15 @@
                   <option value="">Select…</option>
                   <option>Private car shoot</option>
                   <option>Dealership / brand</option>
-                  <option>Sports / event</option>
-                  <option>Athlete portraits</option>
+                  <option>Rolling shots</option>
+                  <option>Turo / rental listing</option>
                   <option>Other</option>
                 </select>
               </label>
               <label>Phone (optional)<input name="phone" type="tel" /></label>
             </div>
             <div class="row">
-              <label>Car / team / event<input name="subject" placeholder="e.g. 2024 911 GT3, LA youth league final" /></label>
+              <label>Car<input name="subject" placeholder="e.g. 2024 911 GT3" /></label>
               <label>Preferred date<input name="date" type="date" /></label>
             </div>
             <label>Budget
@@ -275,7 +303,7 @@
         const btn = form.querySelector("button[type=submit]");
         const fields = {
           Name: data.get("name"), Email: data.get("email"), "Shoot type": data.get("type"),
-          Phone: data.get("phone") || "-", "Car / team / event": data.get("subject") || "-",
+          Phone: data.get("phone") || "-", Car: data.get("subject") || "-",
           "Preferred date": data.get("date") || "-", Budget: data.get("budget") || "-", Message: data.get("message"),
         };
         const subject = `New shoot inquiry — ${data.get("type")} — ${data.get("name")}`;

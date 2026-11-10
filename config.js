@@ -63,7 +63,7 @@ window.SITE = {
       slug: "corvette-c8-alameda", category: "automotive",
       title: "Corvette C8", subtitle: "Private owner · Turo host", location: "San Francisco, CA", year: 2026,
       summary: "A blacked-out C8 at golden hour on the old naval air station, with the USS Hornet as the backdrop.",
-      cover: { src: "images/c8-02.jpg", wide: true },
+      cover: { src: "images/c8-02.jpg", wide: true, pos: "50% 72%" },   // pos = 首页大图裁切时对准车身的位置
       photos: [
         { src: "images/c8-04.jpg", wide: true },
         { src: "images/c8-03.jpg", wide: true },

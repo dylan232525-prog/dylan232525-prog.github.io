@@ -137,8 +137,7 @@
           ${steps()}
         </div></section>
 
-        ${ctaBand}
-        ${quotes()}`;
+        ${ctaBand}`;   // Kind words 暂时不显示,有真实评价后加回 ${quotes()}
     },
 
     work() {
@@ -225,8 +224,7 @@
           <div class="head"><div><span class="eyebrow">How it works</span><h2>From inquiry to delivery</h2></div></div>
           ${steps()}
         </div></section>
-        ${ctaBand}
-        ${quotes()}`;
+        ${ctaBand}`;   // Kind words 暂时不显示,有真实评价后加回 ${quotes()}
     },
 
     contact() {

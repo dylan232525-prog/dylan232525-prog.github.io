@@ -226,6 +226,7 @@ footer a:hover { color: var(--fg); }
 .reveal.in { opacity: 1; transform: none; }
 
 @media (max-width: 900px) {
+  .scroll-cue { display: none; }
   .services, .quotes { grid-template-columns: 1fr; }
   .service, .service + .service { border-right: 0; border-bottom: 1px solid var(--line); padding: 26px 0; }
   .steps { grid-template-columns: 1fr 1fr; }

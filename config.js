@@ -13,7 +13,7 @@ window.SITE = {
   calendlyUrl: "",   // ← Calendly 链接(例如 "https://calendly.com/yourname/15min")。留空显示占位
 
   heroImage: "images/hero.jpg",     // ← 首页大图,例如 "images/hero.jpg"。留空显示占位
-  heroLine: "Cars in motion. Light in the details.",
+  heroLine: "Your car, shot like a campaign.",
 
   intro:
     "I'm a Los Angeles–based automotive photographer working across LA and the Bay Area. " +

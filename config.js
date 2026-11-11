@@ -21,7 +21,7 @@ window.SITE = {
     "for Turo hosts who need listings that stand out, " +
     "and for dealerships and brands that need images that sell — delivered fast.",
 
-  aboutPhoto: "",    // ← 你本人的照片,例如 "images/me.jpg"
+  aboutPhoto: "images/about-dylan.jpg",    // About 页你本人的照片
 
   // ---------- 首页 ----------
   // 项目聚焦:首页单独展示一个项目

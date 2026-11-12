@@ -41,8 +41,8 @@ window.SITE = {
   ],
 
   process: [
-    { step: "Reach out", text: "Tell me about your car or project — dates, location and what the images are for." },
-    { step: "Plan", text: "We talk through the concept, locations and timing so the shoot day runs smooth." },
+    { step: "Inquiry", text: "Tell me about your car or project — dates, location and what the images are for." },
+    { step: "Plan", text: "We hop on a quick call, lock in the concept, locations and timing, and I send a quote." },
     { step: "Shoot", text: "Golden hour, city streets, garage or track — I handle the logistics so you can enjoy the day." },
     { step: "Deliver", text: "Edited, high-resolution images in a private online gallery, typically within 5–7 days." },
   ],

@@ -36,7 +36,7 @@
         <button class="burger" aria-label="Menu">☰</button>
         <nav>
           ${links.map(([h, t, k]) => `<a href="${h}" class="${page === k || (k === "work" && page === "project") ? "on" : ""}">${t}</a>`).join("")}
-          <a href="contact.html" class="cta ${page === "contact" ? "on" : ""}">Get in Touch</a>
+          <a href="contact.html" class="cta ${page === "contact" ? "on" : ""}">Book a Shoot</a>
         </nav>
       </div>
     </header>`);
@@ -55,10 +55,10 @@
   // ---------- pages ----------
   const ctaBand = `
     <section class="band reveal${S.ctaImage ? " photo" : ""}">${S.ctaImage ? `<img class="band-bg" src="${S.ctaImage}" alt="" loading="lazy" />` : ""}<div class="wrap">
-      <span class="eyebrow">Get in touch</span>
+      <span class="eyebrow">Book a shoot</span>
       <h2>Got a car worth shooting?</h2>
       <p>Tell me what you have in mind — I'll get back to you within 24 hours.</p>
-      <a class="btn solid" href="contact.html">Get in Touch →</a>
+      <a class="btn solid" href="contact.html">Start an Inquiry →</a>
     </div></section>`;
 
   const quotes = () => `
@@ -112,7 +112,7 @@
               <h1 aria-label="${S.name}">${letters}</h1>
               <p class="line">${S.heroLine}</p>
             </div>
-            <div class="actions"><a class="btn" href="work.html">View Work</a><a class="btn solid" href="contact.html">Get in Touch</a></div>
+            <div class="actions"><a class="btn" href="work.html">View Work</a><a class="btn solid" href="contact.html">Book a Shoot</a></div>
           </div>
         </section>
 
@@ -221,17 +221,17 @@
           </div>
         </div></section>
         <section style="padding-top:0"><div class="wrap">
-          <div class="head"><div><span class="eyebrow">How it works</span><h2>From idea to delivery</h2></div></div>
+          <div class="head"><div><span class="eyebrow">How it works</span><h2>From inquiry to delivery</h2></div></div>
           ${steps()}
         </div></section>
         ${ctaBand}`;   // Kind words 暂时不显示,有真实评价后加回 ${quotes()}
     },
 
     contact() {
-      document.title = `Contact — ${S.name}`;
+      document.title = `Book a Shoot — ${S.name}`;
       app.innerHTML = `
-        <div class="wrap page-top"><span class="eyebrow">Get in touch</span><h1>Let's talk</h1>
-          <p>Got a car, a project or a collab in mind? Drop me a message and I'll get back to you within 24 hours.</p></div>
+        <div class="wrap page-top"><span class="eyebrow">Book a shoot</span><h1>Let's talk</h1>
+          <p>Fill in a few details and I'll reply within 24 hours with ideas and a quote — or grab a quick call below.</p></div>
         <section style="padding-top:30px"><div class="wrap contact-grid">
           <form class="form" id="form">
             <div class="row">
@@ -255,18 +255,29 @@
               <label>Car<input name="subject" placeholder="e.g. 2024 911 GT3" /></label>
               <label>Preferred date<input name="date" type="date" /></label>
             </div>
+            <label>Budget
+              <select name="budget">
+                <option value="">Prefer not to say</option>
+                <option>Under $500</option>
+                <option>$500 – $1,000</option>
+                <option>$1,000 – $2,500</option>
+                <option>$2,500+</option>
+              </select>
+            </label>
             <label>Tell me more<textarea name="message" rows="5" required placeholder="Location ideas, how you'll use the photos, anything else…"></textarea></label>
             <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
-            <button class="btn solid" type="submit">Send Message →</button>
+            <button class="btn solid" type="submit">Send Inquiry →</button>
             <p class="form-note" id="note"></p>
           </form>
 
           <div class="side">
-            ${S.calendlyUrl ? `<div class="box">
+            <div class="box">
               <h3>Prefer to talk first?</h3>
-              <p>Grab a quick 15-minute call to go over your idea.</p>
-              <div id="cal"><div class="calendly-inline-widget" data-url="${S.calendlyUrl}?hide_gdpr_banner=1&background_color=121214&text_color=f3f1ec&primary_color=e3a548"></div></div>
-            </div>` : ""}
+              <p>Book a free 15-minute call to go over your idea, dates and pricing.</p>
+              <div id="cal">${S.calendlyUrl
+                ? `<div class="calendly-inline-widget" data-url="${S.calendlyUrl}?hide_gdpr_banner=1&background_color=121214&text_color=f3f1ec&primary_color=e3a548"></div>`
+                : `<div class="cal-ph">Calendly booking calendar appears here once connected.</div>`}</div>
+            </div>
             <div class="box direct">
               <h3>Direct</h3>
               <a href="mailto:${S.email}">${S.email}</a>
@@ -291,7 +302,7 @@
         const fields = {
           Name: data.get("name"), Email: data.get("email"), "Shoot type": data.get("type"),
           Phone: data.get("phone") || "-", Car: data.get("subject") || "-",
-          "Preferred date": data.get("date") || "-", Message: data.get("message"),
+          "Preferred date": data.get("date") || "-", Budget: data.get("budget") || "-", Message: data.get("message"),
         };
         const subject = `New shoot inquiry — ${data.get("type")} — ${data.get("name")}`;
         // Send straight from the page — the client never has to open an email app
@@ -304,7 +315,7 @@
           const r = await fetch(endpoint, { signal: AbortSignal.timeout(12000), method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
           const j = await r.json().catch(() => ({}));
           if (!r.ok || j.success === "false" || j.success === false) throw 0;
-          form.reset(); note.className = "form-note ok"; note.textContent = "Thanks! Your message is in — I'll reply within 24 hours.";
+          form.reset(); note.className = "form-note ok"; note.textContent = "Thanks! Your inquiry is in — I'll reply within 24 hours.";
         } catch {
           note.className = "form-note err";
           note.innerHTML = `Something went wrong. Please email me directly at <a href="mailto:${S.email}" style="text-decoration:underline">${S.email}</a>.`;

@@ -274,7 +274,7 @@
             <div class="box">
               <h3>Prefer to talk first?</h3>
               <p>Book a free 15-minute call to go over your idea, dates and pricing.</p>
-              <div id="cal">${S.calendlyUrl
+              <div id="cal">${S.calLink ? `<div id="cal-inline" class="cal-inline"></div>` : S.calendlyUrl
                 ? `<div class="calendly-inline-widget" data-url="${S.calendlyUrl}?hide_gdpr_banner=1&background_color=121214&text_color=f3f1ec&primary_color=e3a548"></div>`
                 : `<div class="cal-ph">Calendly booking calendar appears here once connected.</div>`}</div>
             </div>
@@ -287,7 +287,13 @@
           </div>
         </div></section>`;
 
-      if (S.calendlyUrl) {
+      if (S.calLink) {
+        // Cal.com 官方嵌入代码
+        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+        Cal("init", { origin: "https://cal.com" });
+        Cal("inline", { elementOrSelector: "#cal-inline", calLink: S.calLink, config: { theme: "dark", layout: "month_view" } });
+        Cal("ui", { theme: "dark", cssVarsPerTheme: { dark: { "cal-brand": "#e3a548" } }, hideEventTypeDetails: true, layout: "month_view" });
+      } else if (S.calendlyUrl) {
         const s = document.createElement("script");
         s.src = "https://assets.calendly.com/assets/external/widget.js"; s.async = true;
         document.body.appendChild(s);

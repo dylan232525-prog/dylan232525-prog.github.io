@@ -10,7 +10,8 @@ window.SITE = {
   instagram: "dylanontherunn",                 // ← 不带 @
 
   formspreeId: "xgaaqbea",   // Formspree 表单 ID(询价发到 dylan232525@gmail.com)。留空则改用 FormSubmit
-  calendlyUrl: "",   // ← Calendly 链接(例如 "https://calendly.com/yourname/15min")。留空显示占位
+  calLink: "dylanontherun/15min",   // Cal.com 预约链接(cal.com/ 后面的部分),联系页嵌入预约日历
+  calendlyUrl: "",   // ← Calendly 链接(备用,有 calLink 时不用)
 
   heroImage: "images/hero.jpg",     // ← 首页大图,例如 "images/hero.jpg"。留空显示占位
   heroLine: "Your car, shot like a campaign.",

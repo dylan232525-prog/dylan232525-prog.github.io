@@ -176,8 +176,9 @@
       const isWide = ph => ph.ph ? ph.ph === "3/2" || ph.ph === "16/9" : ph.wide;
       // portraits sit in pairs; a portrait without a partner is centered on its own row
       const layout = []; let open = -1;
+      const inPair = k => p.photos[k].pair || (k > 0 && p.photos[k - 1].pair);
       p.photos.forEach((ph, k) => {
-        if (isWide(ph)) { if (open >= 0) { layout[open] = "solo"; open = -1; } layout[k] = "wide"; }
+        if (isWide(ph) || inPair(k)) { if (open >= 0) { layout[open] = "solo"; open = -1; } layout[k] = "wide"; }
         else if (open >= 0) { layout[k] = ""; open = -1; } else { layout[k] = ""; open = k; }
       });
       if (open >= 0) layout[open] = "solo";
@@ -194,8 +195,16 @@
               </div>
             </div>
           </div>
-          <div class="gallery">${p.photos.map((ph, k) => `
-            <div class="g ${layout[k]}" data-k="${k}" ${ph.ph ? `style="aspect-ratio:${ph.ph}"` : ""}>${media(ph, `${p.title} ${k + 1}`)}</div>`).join("")}
+          <div class="gallery">${p.photos.map((ph, k) => {
+            const cell = (x, i, extra = "") => `<div class="g ${extra}" data-k="${i}" ${x.ph ? `style="aspect-ratio:${x.ph}"` : ""}>${media(x, `${p.title} ${i + 1}`)}</div>`;
+            const ratio = x => x.ratio || (isWide(x) ? 1.5 : 2 / 3);
+            if (k > 0 && p.photos[k - 1].pair) return "";
+            if (ph.pair && p.photos[k + 1]) {
+              const nx = p.photos[k + 1];
+              return `<div class="duo"><div class="duo-cell" style="--r:${ratio(ph)}">${cell(ph, k)}</div><div class="duo-cell" style="--r:${ratio(nx)}">${cell(nx, k + 1)}</div></div>`;
+            }
+            return cell(ph, k, layout[k]);
+          }).join("")}
           </div>
           <div class="proj-nav">
             <a href="${projUrl(prev)}"><small>← Previous</small><span>${prev.title}</span></a>

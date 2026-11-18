@@ -68,6 +68,7 @@ window.SITE = {
       photos: [
         { src: "images/c8-04.jpg", wide: true },
         { src: "images/c8-03.jpg", wide: true },
+        { src: "images/c8-07.jpg", wide: true },   // 大灯特写
         { src: "images/c8-01.jpg", wide: true },
         { src: "images/c8-02.jpg", wide: true },
         { src: "images/c8-05.jpg", wide: true },
@@ -80,11 +81,12 @@ window.SITE = {
       summary: "Top up, top down and into dusk — a CLE cabriolet on the waterfront under the Bay Bridge.",
       cover: { src: "images/cle-02.jpg", wide: true },
       photos: [
-        { src: "images/cle-03.jpg", wide: true },
-        { src: "images/cle-01.jpg", wide: true },
         { src: "images/cle-04.jpg", wide: true },
         { src: "images/cle-05.jpg", wide: true },
         { src: "images/cle-06.jpg", wide: true },
+        { src: "images/cle-03.jpg", wide: true },
+        { src: "images/cle-01.jpg", wide: true },
+        { src: "images/cle-07.jpg", wide: true },
       ],
     },
     {
@@ -126,6 +128,7 @@ window.SITE = {
         { src: "images/grecale-04.jpg", wide: true },
         { src: "images/grecale-03.jpg", wide: true },
         { src: "images/grecale-02.jpg", wide: true },
+        { src: "images/grecale-06.jpg", pair: true },   // pair: true = 竖图和下一张横图并排一行,等高不裁切
         { src: "images/grecale-05.jpg", wide: true },
       ],
     },

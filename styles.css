@@ -172,6 +172,9 @@ section { padding: clamp(80px, 11vw, 140px) 0; }
 .gallery .g.wide { grid-column: span 2; }
 .gallery .g.solo { grid-column: span 2; width: calc(50% - 8px); justify-self: center; }
 .gallery .g > * { width: 100%; height: 100%; object-fit: cover; }
+.gallery .duo { grid-column: span 2; display: flex; gap: 16px; }
+.gallery .duo-cell { flex: var(--r) 1 0; min-width: 0; }
+.gallery .duo-cell .g { height: 100%; }
 .proj-nav { display: flex; justify-content: space-between; gap: 20px; padding: 40px 0 0; border-top: 1px solid var(--line); }
 .proj-nav a small { display: block; color: var(--muted); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 4px; }
 .proj-nav a span { font-family: "Syne"; font-size: clamp(20px, 3vw, 32px); }
@@ -253,6 +256,8 @@ footer a:hover { color: var(--fg); }
   .card.banner::after { background: linear-gradient(180deg, rgba(10,10,11,0) 45%, rgba(10,10,11,.75) 70%, rgba(10,10,11,.95) 100%); }
   .banner-text { left: 22px; right: 22px; }
   .gallery .g.wide, .gallery .g.solo { grid-column: auto; width: auto; }
+  .gallery .duo { grid-column: auto; flex-direction: column; }
+  .gallery .duo-cell { flex: none; }
   .steps { grid-template-columns: 1fr; }
   .form .row { grid-template-columns: 1fr; }
   .facts { grid-template-columns: repeat(2, auto); }

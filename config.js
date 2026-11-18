@@ -79,7 +79,7 @@ window.SITE = {
       slug: "mercedes-cle-amg-sf", category: "automotive",
       title: "Mercedes CLE AMG", subtitle: "Private owner · Turo host", location: "San Francisco, CA", year: 2026,
       summary: "Top up, top down and into dusk — a CLE cabriolet on the waterfront under the Bay Bridge.",
-      cover: { src: "images/cle-02.jpg", wide: true },
+      cover: { src: "images/cle-05.jpg", wide: true },
       photos: [
         { src: "images/cle-04.jpg", wide: true },
         { src: "images/cle-05.jpg", wide: true },
